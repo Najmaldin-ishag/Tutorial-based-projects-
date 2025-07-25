@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initialItems = [
   {
     id: 1,
@@ -24,10 +26,41 @@ function Logo() {
 }
 
 function Form() {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!description) return;
+    const newItems = {
+      quantity,
+      description,
+      package: false,
+      id: Date.now(),
+    };
+    console.log(newItems);
+    setDescription("");
+    setQuantity(1);
+  }
+
   return (
-    <div className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your trip</h3>
-    </div>
+      <select value={quantity} onChange={(e) => setQuantity(+e.target.value)}>
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((option) => (
+          <option value={option} key={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <input
+        type="text"
+        placeholder="item..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <button>Add</button>
+    </form>
   );
 }
 
@@ -36,7 +69,7 @@ function PackingList() {
     <div className="list">
       <ul>
         {initialItems.map((item) => (
-          <Item item={item} />
+          <Item key={item.id} item={item} />
         ))}
       </ul>
     </div>
@@ -56,7 +89,9 @@ function Item({ item }) {
 
 function Stats() {
   return (
-    <footer>💼 You have X items on your list, and you already packed X</footer>
+    <footer className="stats">
+      💼 You have X items on your list, and you already packed X
+    </footer>
   );
 }
 
@@ -66,6 +101,7 @@ const App = () => {
       <Logo />
       <Form />
       <PackingList />
+      <Stats />
     </div>
   );
 };
