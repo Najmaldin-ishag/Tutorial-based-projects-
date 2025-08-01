@@ -13,12 +13,32 @@ const App = () => {
   function handleItems(item) {
     setItem((items) => [...items, item]);
   }
+  function onDeleteItems(id) {
+    setItem((items) => items.filter((item) => item.id !== id));
+  }
+
+  function handleToggleItems(id) {
+    setItem((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
+  function handleClearList() {
+    setItem([]);
+  }
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleItems} />
-      <PackingList item={item} />
-      <Stats />
+      <PackingList
+        item={item}
+        onDeleteItems={onDeleteItems}
+        onToggleItems={handleToggleItems}
+        onClearList={handleClearList}
+      />
+      <Stats items={item} />
     </div>
   );
 };
