@@ -78,6 +78,7 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
+
   useEffect(
     function () {
       async function FetchMovies() {
@@ -107,7 +108,7 @@ export default function App() {
         setError("");
         return;
       }
-
+      handleCloseMovie();
       FetchMovies();
     },
     [query]
@@ -270,6 +271,18 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onCloseMovie();
   }
 
+  useEffect(() => {
+    function callback(e) {
+      if (e.code === "Escape") {
+        onCloseMovie();
+        console.log("closing");
+      }
+    }
+    document.addEventListener("keydown", callback);
+
+    return () => document.removeEventListener("keydown", callback);
+  }, [onCloseMovie]);
+
   const {
     Title: title,
     Year: year,
@@ -300,6 +313,14 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     },
     [selectedId]
   );
+
+  useEffect(() => {
+    if (!title) return;
+
+    document.title = `Movie | ${title}`;
+
+    return () => (document.title = "UsePopcorn");
+  }, [title]);
 
   return (
     <div className="details">
