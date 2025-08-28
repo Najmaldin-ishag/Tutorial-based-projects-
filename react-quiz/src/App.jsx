@@ -5,6 +5,7 @@ import Header from "./Components/Header";
 import Main from "./Components/Main";
 import StartScreen from "./Components/StartScreen";
 import Question from "./Components/Question";
+import NextButton from "./Components/NextButton";
 
 const initialState = {
   questions: [],
@@ -12,9 +13,12 @@ const initialState = {
   // "loading" "error" "ready" "active" "finished"
   status: "loading",
   index: 0,
+  answer: null,
+  points: 0,
 };
 
 function reducer(state, action) {
+  console.log(state);
   switch (action.type) {
     case "dataReceived":
       return { ...state, questions: action.payload, status: "ready" };
@@ -22,13 +26,27 @@ function reducer(state, action) {
       return { ...state, status: "error" };
     case "start":
       return { ...state, status: "active" };
+    case "newAnswer":
+      // eslint-disable-next-line no-case-declarations
+      const question = state.questions.at(state.index);
+
+      return {
+        ...state,
+        answer: action.payload,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points,
+      };
+    case "newQuestion":
+      return { ...state, index: state.index + 1, answer: null };
     default:
       throw new Error("action unknown");
   }
 }
 
 const App = () => {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -51,7 +69,16 @@ const App = () => {
         {status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
-        {status === "active" && <Question question={questions[index]} />}
+        {status === "active" && (
+          <>
+            <Question
+              question={questions[index]}
+              answer={answer}
+              dispatch={dispatch}
+            />
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
+        )}
       </Main>
     </div>
   );
