@@ -1,11 +1,13 @@
-// "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./Form.module.css";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import { useUrlPosition } from "../Hooks/useUrlPosition";
+import Message from "./Message";
+import Spinner from "./Spinner";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
     .toUpperCase()
@@ -14,13 +16,45 @@ export function convertToEmoji(countryCode) {
   return String.fromCodePoint(...codePoints);
 }
 
+const BASE_URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
+
 function Form() {
   const navigate = useNavigate();
+  const [lat, lng] = useUrlPosition();
+
   const [cityName, setCityName] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [country, setCountry] = useState("");
+  const [emoji, setEmoji] = useState("");
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
+  const [geoCodingError, setGeoCodingError] = useState("");
+  const [isLoadingGeoLocation, setIsLoadingGeoLocation] = useState(false);
 
+  useEffect(() => {
+    async function fetchCityData() {
+      try {
+        setIsLoadingGeoLocation(true);
+        setGeoCodingError("");
+        const res = await fetch(`${BASE_URL}?latitude=${lat}&longitude=${lng}`);
+        const data = await res.json();
+
+        if (!data.countryCode)
+          throw new Error("No country found for this location");
+        setCityName(data.city || data.locality || "");
+        setCountry(data.countryName);
+        setEmoji(convertToEmoji(data.countryCode));
+      } catch (error) {
+        setGeoCodingError(error.message);
+      } finally {
+        setIsLoadingGeoLocation(false);
+      }
+    }
+    fetchCityData();
+  }, [lat, lng, isLoadingGeoLocation]);
+
+  if (isLoadingGeoLocation) return <Spinner />;
+  if (geoCodingError) return <Message message={geoCodingError} />;
   return (
     <form className={styles.form}>
       <div className={styles.row}>
@@ -30,7 +64,7 @@ function Form() {
           onChange={(e) => setCityName(e.target.value)}
           value={cityName}
         />
-        {/* <span className={styles.flag}>{emoji}</span> */}
+        <span className={styles.flag}>{emoji}</span>
       </div>
 
       <div className={styles.row}>

@@ -1,22 +1,45 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Map.module.css";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvent,
+} from "react-leaflet";
 import { useCities } from "../Context/CitiesContext";
+import useGeolocation from "../Hooks/useGeolocation";
+import Button from "./Button";
+import { useUrlPosition } from "../Hooks/useUrlPosition";
 const Map = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [mapPosition, setMapPosition] = useState([40, 0]);
   const { cities } = useCities();
-  const lat = searchParams.get("lat");
-  const lng = searchParams.get("lng");
+  const [lat, lng] = useUrlPosition();
+  const {
+    isLoading: isLoadingPosition,
+    getPosition,
+    position: geoPosition,
+  } = useGeolocation();
+  const [mapPosition, setMapPosition] = useState([40, 0]);
 
   useEffect(() => {
     if (lat && lng) setMapPosition([lat, lng]);
   }, [lat, lng]);
 
+  useEffect(
+    function () {
+      if (geoPosition) setMapPosition([geoPosition.lat, geoPosition.lng]);
+    },
+    [geoPosition]
+  );
   return (
-    <div className={styles.mapContainer} onClick={() => navigate("form")}>
+    <div className={styles.mapContainer}>
+      {!geoPosition && (
+        <Button onClick={getPosition} type="position">
+          {isLoadingPosition ? "Loading..." : "Use your position"}
+        </Button>
+      )}
       <MapContainer
         center={mapPosition}
         zoom={13}
@@ -39,6 +62,7 @@ const Map = () => {
           </Marker>
         ))}
         <ChangeCenter position={mapPosition} />
+        <DetectClick />
       </MapContainer>
     </div>
   );
@@ -51,4 +75,12 @@ function ChangeCenter({ position }) {
   return null;
 }
 
+function DetectClick() {
+  const navigate = useNavigate();
+  useMapEvent({
+    click: (e) => {
+      navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    },
+  });
+}
 export default Map;
