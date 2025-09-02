@@ -1,5 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useEffect, useContext, useReducer } from "react";
+import {
+  createContext,
+  useEffect,
+  useContext,
+  useReducer,
+  useCallback,
+} from "react";
 
 const CitiesContext = createContext();
 
@@ -67,7 +73,7 @@ function CitiesContextProvider({ children }) {
     fetchCities();
   }, []);
 
-  async function getCities(id) {
+  const getCities = useCallback(async function getCities(id) {
     try {
       dispatch({ type: "loading" });
       const res = await fetch(`${BASE_URL}/cities/${id}`);
@@ -80,7 +86,7 @@ function CitiesContextProvider({ children }) {
         payload: "there was an error loading city",
       });
     }
-  }
+  }, []);
 
   async function createCity(newCity) {
     try {
