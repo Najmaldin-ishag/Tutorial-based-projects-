@@ -1,43 +1,34 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+import { clearCart, getCart, getUserName } from "./cartSlice";
+import CartItem from "./CartItem";
+import EmptyCart from "./EmptyCart";
 
 function Cart() {
-  const userName = useSelector((state) => state.user.username);
-  const cart = fakeCart;
+  const dispatch = useDispatch();
+  const userName = useSelector(getUserName);
+  const cart = useSelector(getCart);
 
+  function handleClearCart() {
+    dispatch(clearCart());
+  }
+
+  if (!cart.length) return <EmptyCart />;
   return (
     <div>
       <Link to="/menu">&larr; Back to menu</Link>
 
       <h2>Your cart,{userName}</h2>
 
+      <ul>
+        {cart.map((item) => (
+          <CartItem item={item} key={item.key} />
+        ))}
+      </ul>
+
       <div>
         <Link to="/order/new">Order pizzas</Link>
-        <button>Clear cart</button>
+        <button onClick={handleClearCart}>Clear cart</button>
       </div>
     </div>
   );
