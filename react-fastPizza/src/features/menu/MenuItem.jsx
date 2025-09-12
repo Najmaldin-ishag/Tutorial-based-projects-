@@ -10,10 +10,10 @@ function MenuItem({ pizza }) {
   const isInCart = currentQuantity > 0;
   function handleCart() {
     const newItem = {
-      pizzaID: id,
+      pizzaId: id,
       name,
       quantity: 1,
-      price: unitPrice,
+      unitPrice,
       totalPrice: unitPrice * 2,
     };
 
