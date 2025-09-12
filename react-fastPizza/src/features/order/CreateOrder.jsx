@@ -1,10 +1,11 @@
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createNewOrder } from "../../services/apiRestaurant";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart, getCartTotalPrice } from "../cart/cartSlice";
 import store from "../../store";
 import { formatCurrency } from "../../utils/helpers";
 import { useState } from "react";
+import { fetchAddress } from "../user/userSlice";
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
@@ -17,6 +18,7 @@ function CreateOrder() {
 
   const navigation = useNavigation();
   const formErrors = useActionData();
+  const dispatch = useDispatch();
 
   const isSubmitting = navigation.state === "submitting";
 
@@ -29,6 +31,8 @@ function CreateOrder() {
   return (
     <div>
       <h2>Ready to order? Let's go!</h2>
+
+      <button onClick={() => dispatch(fetchAddress())}>Get position</button>
 
       <Form method="POST" action="">
         <div>
