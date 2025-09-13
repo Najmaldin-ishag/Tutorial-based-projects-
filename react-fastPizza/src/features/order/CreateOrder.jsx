@@ -14,8 +14,14 @@ const isValidPhone = (str) =>
 
 function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
-  const userName = useSelector((state) => state.user.username);
+  const {
+    userName,
+    status: addressStatus,
+    position,
+    address,
+  } = useSelector((state) => state.user.username);
 
+  const isLoadingPosition = addressStatus === "loading";
   const navigation = useNavigation();
   const formErrors = useActionData();
   const dispatch = useDispatch();
@@ -32,7 +38,12 @@ function CreateOrder() {
     <div>
       <h2>Ready to order? Let's go!</h2>
 
-      <button onClick={() => dispatch(fetchAddress())}>Get position</button>
+      <button
+        disabled={isLoadingPosition}
+        onClick={() => dispatch(fetchAddress())}
+      >
+        Get position
+      </button>
 
       <Form method="POST" action="">
         <div>
@@ -51,7 +62,12 @@ function CreateOrder() {
         <div>
           <label>Address</label>
           <div>
-            <input type="text" name="address" required />
+            <input
+              type="text"
+              name="address"
+              required
+              disabled={isLoadingPosition}
+            />
           </div>
         </div>
 
