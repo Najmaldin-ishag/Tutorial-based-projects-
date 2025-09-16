@@ -29,11 +29,11 @@ const AppLayout = () => {
     <StyledAppLayout>
       <Header />
       <Sidebar />
-      <>
+      <Main>
         <Container>
           <Outlet />
         </Container>
-      </>
+      </Main>
     </StyledAppLayout>
   );
 };
