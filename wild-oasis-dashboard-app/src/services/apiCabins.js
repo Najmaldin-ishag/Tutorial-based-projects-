@@ -25,18 +25,29 @@ export async function getCabins() {
  * The function is designed this way to ensure that each cabin image has a unique name (to avoid
  * filename collisions in storage) and to handle errors gracefully by logging and throwing them.
  */
-export async function createCabin(newCabin) {
+export async function createCabin(newCabin, id) {
+  const hasImagePath = newCabin.image?.startsWith?.(supabase);
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     ""
   );
-  const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+  const imageUrl = hasImagePath
+    ? newCabin.image
+    : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
 
-  const { data, error } = await supabase
-    .from("Cabins")
-    .insert([{ ...newCabin, image: imageUrl }])
-    .select();
+  // create/edit cabin
+  let query = supabase.from("Cabins");
+  // 1- Create
+  if (!id) query = query.insert([{ ...newCabin, image: imageUrl }]);
 
+  // 2- Edit
+  if (id)
+    query = query
+      .update({ ...newCabin, image: imageUrl })
+      .eq("id", id)
+      .select();
+
+  const { data, error } = await query.select().single();
   if (error) {
     console.error("Cabins could not be created:", error);
     throw new Error("Cabins could not be created", error);

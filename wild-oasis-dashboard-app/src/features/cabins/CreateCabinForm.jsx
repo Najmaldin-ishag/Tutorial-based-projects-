@@ -46,8 +46,12 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm() {
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+function CreateCabinForm({ cabinToEdit = {} }) {
+  const { id: editId, ...editValues } = cabinToEdit;
+  const editSession = Boolean(editId);
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: editSession ? editValues : {},
+  });
   const { errors } = formState;
   const queryClient = useQueryClient();
 
@@ -65,8 +69,28 @@ function CreateCabinForm() {
     },
   });
 
+  const { mutate: editCabin, isLoading: isEditing } = useMutation({
+    mutationFn: ({ newCabinData, id }) => createCabin(newCabinData, id),
+    onSuccess: () => {
+      toast.success("Cabin have been edited!");
+      queryClient.invalidateQueries({
+        queryKey: ["cabins"],
+      });
+      reset();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const isWorking = isLoading || isEditing;
+
   function onSubmit(data) {
-    mutate({ ...data, image: data.image[0] });
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+
+    if (editSession)
+      editCabin({ newCabinData: { ...data, image }, id: editId });
+    else mutate({ ...data, image: image });
   }
 
   function onError(errors) {
@@ -155,7 +179,7 @@ function CreateCabinForm() {
           id="image"
           accept="image/*"
           {...register("image", {
-            required: "this field is required",
+            required: editSession ? false : "this field is required",
           })}
         />
       </FormRow>
@@ -166,7 +190,7 @@ function CreateCabinForm() {
           Cancel
         </Button>
         <Button variation="primary" type="submit" disabled={isLoading}>
-          {isLoading ? "Creating Cabin..." : "Add cabin"}
+          {editSession ? "Edit  Cabin..." : "Create new cabin"}
         </Button>
       </FormRow>
     </Form>
