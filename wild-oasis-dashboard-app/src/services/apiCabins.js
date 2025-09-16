@@ -26,7 +26,7 @@ export async function getCabins() {
  * filename collisions in storage) and to handle errors gracefully by logging and throwing them.
  */
 export async function createCabin(newCabin, id) {
-  const hasImagePath = newCabin.image?.startsWith?.(supabase);
+  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     ""
