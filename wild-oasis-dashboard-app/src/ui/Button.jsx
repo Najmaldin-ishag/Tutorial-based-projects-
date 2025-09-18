@@ -1,3 +1,4 @@
+import { Children } from "react";
 import styled, { css } from "styled-components";
 
 const sizes = {
@@ -64,4 +65,7 @@ Button.defaultProps = {
   size: "medium",
 };
 
+// function Button({ Children }) {
+//   return <button>{Children}</button>;
+// }
 export default Button;
