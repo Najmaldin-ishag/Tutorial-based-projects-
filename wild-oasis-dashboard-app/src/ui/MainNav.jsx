@@ -81,12 +81,12 @@ export default function MainNav() {
             <span>Users</span>
           </StyledNavLink>
         </li>
-        <li>
+        {/* <li>
           <StyledNavLink to="/bookings">
             <HiCalendarDays />
             <span>Bookings</span>
           </StyledNavLink>
-        </li>
+        </li> */}
         <li>
           <StyledNavLink to="/settings">
             <HiCog8Tooth />
