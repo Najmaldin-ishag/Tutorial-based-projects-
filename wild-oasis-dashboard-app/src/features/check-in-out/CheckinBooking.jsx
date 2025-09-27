@@ -4,10 +4,16 @@ import BookingDataBox from "../../features/bookings/BookingDataBox";
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
 import ButtonGroup from "../../ui/ButtonGroup";
-import Button from "../../ui/Button";
+// import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Checkbox from "../../ui/Checkbox";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "../bookings/useBooking";
+import Spinner from "../../ui/Spinner";
+import { useEffect, useState } from "react";
+import { formatCurrency } from "../../utils/helpers";
+import { useCheckIn } from "./useCheckIn";
 
 const Box = styled.div`
   /* Box */
@@ -17,21 +23,46 @@ const Box = styled.div`
   padding: 2.4rem 4rem;
 `;
 
+const Button = styled.button`
+  width: fit-content;
+  border: none;
+  color: #fff;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 2.4rem;
+
+  &:first-child {
+    background-color: var(--color-brand-500);
+  }
+  &:last-child {
+    background-color: #fff;
+    color: #333;
+  }
+`;
+
 function CheckinBooking() {
+  const [confirmed, setConfirmed] = useState(false);
+  const { booking, isLoading } = useBooking();
+  const { checkin, isCheckingIn } = useCheckIn();
   const moveBack = useMoveBack();
 
-  const booking = {};
+  useEffect(() => setConfirmed(booking?.isPaid ?? false), [booking]);
+  if (isLoading) return <Spinner />;
 
   const {
     id: bookingId,
-    guests,
+    Guest,
     totalPrice,
-    numGuests,
+    numGuest,
     hasBreakfast,
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!confirmed) return;
+
+    checkin(bookingId);
+  }
 
   return (
     <>
@@ -42,8 +73,22 @@ function CheckinBooking() {
 
       <BookingDataBox booking={booking} />
 
+      <Box>
+        <Checkbox
+          checked={confirmed}
+          onChange={() => setConfirmed((confirm) => !confirm)}
+          id="confirm"
+          disabled={confirmed || isCheckingIn}
+        >
+          I confirm that {Guest.fullName} has paid the total amount{" "}
+          {formatCurrency(totalPrice)}
+        </Checkbox>
+      </Box>
+
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
+        <Button disabled={confirmed || isCheckingIn} onClick={handleCheckin}>
+          Check in booking #{bookingId}
+        </Button>
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>
