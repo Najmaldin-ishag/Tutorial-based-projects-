@@ -44,3 +44,33 @@ export async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
 }
+
+export async function updateCurrentUser({ password, fullName, avatar }) {
+  let updateData;
+
+  if (password) updateData = { password };
+  if (fullName) updateData = { data: { fullName } };
+
+  const { data, error } = await supabase.auth.updateUser(updateData);
+
+  if (error) throw new Error(error.message);
+
+  if (!avatar) return data;
+
+  const fileName = `Avatar-${data.user.id}-${Math.random()}`;
+
+  const { error: storageErrors } = await supabase.storage
+    .from("Avatars")
+    .upload(fileName, avatar);
+
+  if (storageErrors) throw new Error(storageErrors.message);
+
+  const { data: updateUser, error: updateError } = supabase.auth.updateUser({
+    data: {
+      avatar: `https://vqnkhlidkqdthzpiqijd.supabase.co/storage/v1/object/public/Avatars/${fileName}`,
+    },
+  });
+  if (updateError) throw new Error(updateError.message);
+
+  return updateUser;
+}

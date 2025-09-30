@@ -1,23 +1,42 @@
 import { useForm } from "react-hook-form";
-import Button from "../../ui/Button";
+// import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-
 import { useUpdateUser } from "./useUpdateUser";
+import styled from "styled-components";
+
+const Button = styled.button`
+  width: fit-content;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 2.4rem;
+
+  &:last-child {
+    background-color: var(--color-brand-500);
+    color: #fff;
+  }
+`;
 
 function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUser, isUpdating } = useUpdateUser();
+  const { UpdateUserFn, isUpdating } = useUpdateUser();
 
   function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
+    UpdateUserFn({ password }, { onSuccess: reset });
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      style={{
+        padding: "1.5rem 2rem",
+        backgroundColor: "white",
+      }}
+    >
       <FormRow
         label="Password (min 8 characters)"
         error={errors?.password?.message}
