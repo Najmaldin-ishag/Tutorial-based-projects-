@@ -31,10 +31,7 @@ function SignupForm() {
   }
 
   return (
-    <Form
-      style={{ backgroundColor: "white", padding: "2rem 1.5rem" }}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow label="Full name" error={errors?.fullName?.message}>
         <Input
           type="text"

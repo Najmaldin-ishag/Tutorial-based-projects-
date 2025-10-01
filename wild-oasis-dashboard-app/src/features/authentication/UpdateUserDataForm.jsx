@@ -53,13 +53,7 @@ function UpdateUserDataForm() {
   }
 
   return (
-    <Form
-      style={{
-        padding: "1.5rem 2rem",
-        backgroundColor: "white",
-      }}
-      onSubmit={handleSubmit}
-    >
+    <Form onSubmit={handleSubmit}>
       <FormRow label="Email address">
         <Input value={email} disabled />
       </FormRow>

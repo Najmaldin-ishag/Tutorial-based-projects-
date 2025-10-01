@@ -30,13 +30,7 @@ function UpdatePasswordForm() {
   }
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      style={{
-        padding: "1.5rem 2rem",
-        backgroundColor: "white",
-      }}
-    >
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow
         label="Password (min 8 characters)"
         error={errors?.password?.message}

@@ -65,11 +65,12 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
 
   if (storageErrors) throw new Error(storageErrors.message);
 
-  const { data: updateUser, error: updateError } = supabase.auth.updateUser({
-    data: {
-      avatar: `https://vqnkhlidkqdthzpiqijd.supabase.co/storage/v1/object/public/Avatars/${fileName}`,
-    },
-  });
+  const { data: updateUser, error: updateError } =
+    await supabase.auth.updateUser({
+      data: {
+        avatar: `https://vqnkhlidkqdthzpiqijd.supabase.co/storage/v1/object/public/Avatars/${fileName}`,
+      },
+    });
   if (updateError) throw new Error(updateError.message);
 
   return updateUser;
