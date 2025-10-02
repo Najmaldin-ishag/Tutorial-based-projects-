@@ -21,7 +21,7 @@ const Button = styled.button`
 
 function LoginForm() {
   const [email, setEmail] = useState("najm@hello.com");
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState("123456789");
   const { login, isPending } = useLogin();
 
   function handleSubmit(e) {
