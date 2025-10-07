@@ -1,5 +1,11 @@
+export const metadata = { title: "Account " };
+
 function page() {
-  return <div>account</div>;
+  return (
+    <h2 className="mb-7 text-2xl font-semibold text-accent-400">
+      Welcome, reservations
+    </h2>
+  );
 }
 
 export default page;
