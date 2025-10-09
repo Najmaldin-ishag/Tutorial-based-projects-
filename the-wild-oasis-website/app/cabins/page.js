@@ -4,6 +4,8 @@ import Spinner from "../_components/Spinner";
 
 export const metadata = { title: "Cabins " };
 
+export const revalidate = 0;
+
 export default function Page() {
   return (
     <div>
