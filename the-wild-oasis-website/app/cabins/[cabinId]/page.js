@@ -1,4 +1,5 @@
 import Cabin from "@/app/_components/Cabin";
+import ReservationReminder from "@/app/_components/ReservationReminder";
 import Reservations from "@/app/_components/Reservations";
 import Spinner from "@/app/_components/Spinner";
 import { getCabin, getCabins } from "@/app/_lib/data-service";
@@ -36,6 +37,7 @@ export default async function Page({ params }) {
 
         <Suspense fallback={<Spinner />}>
           <Reservations cabin={cabin} />
+          <ReservationReminder />
         </Suspense>
       </div>
     </div>
