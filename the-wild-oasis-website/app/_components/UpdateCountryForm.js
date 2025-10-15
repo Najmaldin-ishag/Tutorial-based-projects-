@@ -1,18 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import countryFlag from "@/public/pt.png";
+// import countryFlag from "@/public/pt.png";
 import { useState } from "react";
+import { updateProfile } from "../_lib/actions";
 
-function UpdateCountryForm({ children }) {
+function UpdateCountryForm({ children, guest }) {
   const [country, setCountry] = useState();
 
+  const { fullName, email, countryFlag, nationalID, nationality } = guest;
   return (
-    <form className="flex flex-col gap-6 bg-primary-900 px-12 py-8 text-lg">
+    <form
+      action={updateProfile}
+      className="flex flex-col gap-6 bg-primary-900 px-12 py-8 text-lg"
+    >
       <div className="space-y-2">
         <label>Full name</label>
         <input
+          defaultValue={fullName}
           disabled
+          name="fullName"
           className="w-full rounded-sm bg-primary-200 px-5 py-3 text-primary-800 shadow-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
       </div>
@@ -20,6 +27,8 @@ function UpdateCountryForm({ children }) {
       <div className="space-y-2">
         <label>Email address</label>
         <input
+          defaultValue={email}
+          name="email"
           disabled
           className="w-full rounded-sm bg-primary-200 px-5 py-3 text-primary-800 shadow-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
@@ -29,12 +38,12 @@ function UpdateCountryForm({ children }) {
         <div className="flex items-center justify-between">
           <label htmlFor="nationality">Where are you from?</label>
           <div className="relative">
-            <Image
+            {/* <Image
               fill
               src={countryFlag}
               alt="Country flag"
               className="h-5 rounded-sm object-cover"
-            />
+            /> */}
           </div>
         </div>
 
@@ -44,6 +53,7 @@ function UpdateCountryForm({ children }) {
       <div className="space-y-2">
         <label htmlFor="nationalID">National ID number</label>
         <input
+          defaultValue={nationalID}
           name="nationalID"
           className="w-full rounded-sm bg-primary-200 px-5 py-3 text-primary-800 shadow-sm"
         />
