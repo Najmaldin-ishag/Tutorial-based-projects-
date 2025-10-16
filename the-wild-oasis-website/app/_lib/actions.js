@@ -26,12 +26,37 @@ export async function updateProfile(formData) {
   revalidatePath("/account/profile");
   if (error) throw new Error("Guest could not be updated");
 }
+
 export async function signInActions() {
   await signIn("google", { redirectTo: "/account" });
 }
 
 export async function signOutAction() {
   await signOut({ redirectTo: "/" });
+}
+
+export async function createReservation(bookingData, formData) {
+  const session = await auth();
+  if (!session)
+    throw new Error("You must be logged in to create a reservation");
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuest: Number(formData.get("numGuest")),
+    observations: formData.get("observations").slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: "unconfirmed",
+  };
+  const { error } = await supabase.from("Bookings").insert([newBooking]);
+
+  if (error) throw new Error("Booking could not be created");
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect("/thanksyou");
 }
 
 export async function deleteReservation(bookingId) {
