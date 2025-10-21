@@ -1,0 +1,28 @@
+{
+  "cities": [
+    {
+      "id": "5d38",
+      "cityName": "Nogara",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "date": "2025-09-01T20:40:21.837Z",
+      "notes": "",
+      "position": {
+        "lat": "45.18212059619968",
+        "lng": "11.052246093750002"
+      }
+    },
+    {
+      "id": "cfb3",
+      "cityName": "Castello de la Plana",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2025-09-02T18:42:05.403Z",
+      "notes": "",
+      "position": {
+        "lat": "39.99461325022521",
+        "lng": "-0.05218505859375001"
+      }
+    }
+  ]
+}
