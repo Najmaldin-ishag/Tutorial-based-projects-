@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import "@/app/globals.css";
 import localFont from "next/font/local";
+import "easymde/dist/easymde.min.css";
 
 const workSans = localFont({
   src: [
