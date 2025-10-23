@@ -1,5 +1,7 @@
+import { client } from "@/sanity/lib/client";
 import SearchForm from "../../components/SearchForm";
-import StartupCard from "@/components/StartupCard";
+import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
+import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
 async function Home({
   searchParams,
@@ -8,22 +10,23 @@ async function Home({
 }) {
   const query = (await searchParams).query;
 
-  const posts = [
-    {
-      _createdAt: new Date(), // or "yesterday"
-      views: 55,
-      postId: 1,
-      author: {
-        name: "Adrian",
-        _id: 1,
-      },
+  const posts = await client.fetch(STARTUPS_QUERY);
+  // const posts = [
+  //   {
+  //     _createdAt: new Date(), // or "yesterday"
+  //     views: 55,
+  //     postId: 1,
+  //     author: {
+  //       name: "Adrian",
+  //       _id: 1,
+  //     },
 
-      description: "This is a description",
-      image: "https://placehold.co/600x400", // Example image
-      category: "robots",
-      title: "We Robots",
-    },
-  ];
+  //     description: "This is a description",
+  //     image: "https://placehold.co/600x400", // Example image
+  //     category: "robots",
+  //     title: "We Robots",
+  //   },
+  // ];
 
   return (
     <>
@@ -47,8 +50,8 @@ async function Home({
 
         <ul className="card_grid">
           {posts.length > 0 ? (
-            posts.map((post: StartupCardType) => (
-              <StartupCard post={post} key={post?.postId} />
+            posts.map((post: StartupTypeCard) => (
+              <StartupCard post={post} key={post?._id} />
             ))
           ) : (
             <p className="no-results">No startups found.</p>

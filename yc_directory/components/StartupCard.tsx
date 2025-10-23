@@ -3,8 +3,12 @@ import { EyeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { Author, Startup } from "@/sanity/types";
+
+export type StartupTypeCard = Omit<Startup, "author"> & { author: Author };
 
 function StartupCard({ post }: { post: StartupTypeCard }) {
+  const { views, _id, author, description, category } = post;
   return (
     <li className="startup-card group">
       <div className="flex-between">
@@ -12,18 +16,18 @@ function StartupCard({ post }: { post: StartupTypeCard }) {
 
         <div className="flex gap-1.5">
           <EyeIcon className="size-6 text-primary" />
-          <span className="text-16-medium">{post.views}</span>
+          <span className="text-16-medium">{views}</span>
         </div>
       </div>
 
       <div className="flex-between mt-5 gap-5">
         <div className="flex-1">
-          <Link href={`/startup/${post.postId}`}>
-            <h3 className="text-16-medium line-clamp-1">{post.author.name}</h3>
+          <Link href={`/user/${author?._id}`}>
+            <h3 className="text-16-medium line-clamp-1">{author?.name}</h3>
           </Link>
         </div>
 
-        <Link href={`/user/${post.author._id}`}>
+        <Link href={`/user/${author?._id}`}>
           <Image
             src="https://placehold.co/40x40"
             alt="author"
@@ -34,8 +38,8 @@ function StartupCard({ post }: { post: StartupTypeCard }) {
         </Link>
       </div>
 
-      <Link href={`/startup/${post.author?._id}`}>
-        <p className="startup-card_desc">{post.description}</p>
+      <Link href={`/startup/${_id}`}>
+        <p className="startup-card_desc">{description}</p>
 
         <img
           src={post.image}
@@ -45,12 +49,12 @@ function StartupCard({ post }: { post: StartupTypeCard }) {
       </Link>
 
       <div className="flex-between gap-3 mt-5">
-        <Link href={`/?query=${post.category}`}>
-          <p className="text-16-medium">{post.category}</p>
+        <Link href={`/?query=${category?.toLocaleLowerCase()}`}>
+          <p className="text-16-medium">{category}</p>
         </Link>
 
         <Button className="startup-card-btn" asChild>
-          <Link href={`/startup/${post.postId}`}>View Pitch</Link>
+          <Link href={`/startup/${_id}`}>View Pitch</Link>
         </Button>
       </div>
     </li>
