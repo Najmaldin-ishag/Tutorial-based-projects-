@@ -9,8 +9,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
     ],
   },
+
+  // experimental: {
+  //   ppr: true,
+  // },
+  // devIndicators: {
+  //   appIsrStatus: true,
+  //   buildActivity: true,
+  //   buildActivityPosition: "bottom-right",
+  // },
 };
 
 export default nextConfig;
